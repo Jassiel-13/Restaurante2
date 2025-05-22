@@ -4,94 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mesero</title>
-  <link href="https://fonts.googleapis.com/css2?family=Kavoon&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kavoon&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="src/css/mesero.css" />
 </head>
 <body>
   <div class="container">
     <h3>Pedido Actual</h3>
-    <button class="btn-cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
+<button class="btn-cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
     <div id="pedidoMesero">
-      <p>No hay productos.</p>
+      <!-- Aquí se mostrará el pedido dinámicamente -->
+      <p>No hay productos.</p> <!-- Mensaje por defecto si no hay pedido -->
     </div>
+
     <div class="botones">
       <button class="vaciar" onclick="vaciarPedido()">Vaciar Pedido</button>
       <button class="enviar" onclick="enviarACocina()">Enviar a Cocina</button>
     </div>
   </div>
 
-  <script>
-    function mostrarPedido() {
-      const contenedor = document.getElementById("pedidoMesero");
-      contenedor.innerHTML = "";
+  <script src="src/assets/js/log.js"></script></body>
 
-      const pedidoJSON = localStorage.getItem("pedidoActual");
-      if (!pedidoJSON) {
-        contenedor.innerHTML = "<p>No hay productos.</p>";
-        return;
-      }
 
-      const pedido = JSON.parse(pedidoJSON);
-      if (pedido.length === 0) {
-        contenedor.innerHTML = "<p>No hay productos.</p>";
-        return;
-      }
-
-      const tabla = document.createElement("table");
-      tabla.innerHTML = `
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Producto</th>
-            <th>Ingredientes</th>
-          </tr>
-        </thead>
-      `;
-
-      const tbody = document.createElement("tbody");
-
-      pedido.forEach((producto, index) => {
-        const tr = document.createElement("tr");
-
-        tr.innerHTML = `
-          <td>${index + 1}</td>
-          <td>${producto.nombre}</td>
-          <td>${producto.ingredientes && producto.ingredientes.length > 0 ? producto.ingredientes.map(i => `• ${i}`).join("<br>") : "Sin ingredientes"}</td>
-        `;
-
-        tbody.appendChild(tr);
-      });
-
-      tabla.appendChild(tbody);
-      contenedor.appendChild(tabla);
-    }
-
-    function vaciarPedido() {
-      if (confirm("¿Seguro que deseas vaciar el pedido?")) {
-        localStorage.removeItem("pedidoActual");
-        mostrarPedido();
-      }
-    }
-
-    function enviarACocina() {
-      const pedidoJSON = localStorage.getItem("pedidoActual");
-      if (!pedidoJSON || JSON.parse(pedidoJSON).length === 0) {
-        alert("No hay productos para enviar.");
-        return;
-      }
-
-      alert("¡Pedido enviado a cocina!");
-      localStorage.removeItem("pedidoActual");
-      mostrarPedido();
-    }
-
-    function cerrarSesion() {
-      alert("Sesión cerrada correctamente.");
-      window.location.href = "index.html";
-    }
-
-    // Mostrar el pedido cuando se carga la página
-    mostrarPedido();
-  </script>
 </body>
+
 </html>
