@@ -15,7 +15,7 @@
     <button class="btn-cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
 
     <div id="pedidoMesero">
-      <!-- Aquí se mostrará el pedido dinámicamente -->
+      <!-- Contenido del pedido se genera dinámicamente -->
       <p>No hay productos.</p>
     </div>
 
@@ -27,50 +27,63 @@
 
   <script>
     function mostrarPedido() {
-      const pedidoDiv = document.getElementById("pedidoMesero");
-      pedidoDiv.innerHTML = ""; // Limpiar contenido
+      const contenedor = document.getElementById("pedidoMesero");
+      contenedor.innerHTML = "";
 
       const pedidoJSON = localStorage.getItem("pedidoActual");
       if (!pedidoJSON) {
-        pedidoDiv.innerHTML = "<p>No hay productos.</p>";
+        contenedor.innerHTML = "<p>No hay productos.</p>";
         return;
       }
 
       const pedido = JSON.parse(pedidoJSON);
-
       if (pedido.length === 0) {
-        pedidoDiv.innerHTML = "<p>No hay productos.</p>";
+        contenedor.innerHTML = "<p>No hay productos.</p>";
         return;
       }
 
+      const tabla = document.createElement("table");
+      const thead = document.createElement("thead");
+      thead.innerHTML = `
+        <tr>
+          <th>#</th>
+          <th>Producto</th>
+          <th>Ingredientes</th>
+        </tr>
+      `;
+      tabla.appendChild(thead);
+
+      const tbody = document.createElement("tbody");
+
       pedido.forEach((producto, index) => {
-        const productoDiv = document.createElement("div");
-        productoDiv.classList.add("producto");
+        const tr = document.createElement("tr");
 
-        const nombreProducto = document.createElement("h4");
-        nombreProducto.textContent = `${index + 1}. ${producto.nombre}`;
+        const tdIndex = document.createElement("td");
+        tdIndex.textContent = index + 1;
 
-        const listaIngredientes = document.createElement("ul");
+        const tdNombre = document.createElement("td");
+        tdNombre.textContent = producto.nombre;
+
+        const tdIngredientes = document.createElement("td");
         if (producto.ingredientes && producto.ingredientes.length > 0) {
-          producto.ingredientes.forEach(ing => {
-            const li = document.createElement("li");
-            li.textContent = ing;
-            listaIngredientes.appendChild(li);
-          });
+          tdIngredientes.innerHTML = producto.ingredientes.map(i => `• ${i}`).join("<br>");
         } else {
-          const li = document.createElement("li");
-          li.textContent = "Sin ingredientes";
-          listaIngredientes.appendChild(li);
+          tdIngredientes.textContent = "Sin ingredientes";
         }
 
-        productoDiv.appendChild(nombreProducto);
-        productoDiv.appendChild(listaIngredientes);
-        pedidoDiv.appendChild(productoDiv);
+        tr.appendChild(tdIndex);
+        tr.appendChild(tdNombre);
+        tr.appendChild(tdIngredientes);
+
+        tbody.appendChild(tr);
       });
+
+      tabla.appendChild(tbody);
+      contenedor.appendChild(tabla);
     }
 
     function vaciarPedido() {
-      if (confirm("¿Estás seguro de que quieres vaciar el pedido?")) {
+      if (confirm("¿Seguro que deseas vaciar el pedido?")) {
         localStorage.removeItem("pedidoActual");
         mostrarPedido();
       }
@@ -79,24 +92,22 @@
     function enviarACocina() {
       const pedidoJSON = localStorage.getItem("pedidoActual");
       if (!pedidoJSON || JSON.parse(pedidoJSON).length === 0) {
-        alert("No hay nada que enviar.");
+        alert("No hay productos para enviar.");
         return;
       }
 
-      // Aquí puedes agregar lógica para enviar el pedido a un backend si deseas
-      alert("Pedido enviado a cocina correctamente.");
+      alert("¡Pedido enviado a cocina!");
       localStorage.removeItem("pedidoActual");
       mostrarPedido();
     }
 
     function cerrarSesion() {
-      alert("Sesión cerrada.");
+      alert("Sesión cerrada correctamente.");
       window.location.href = "index.html";
     }
 
-    // Mostrar pedido al cargar la página
+    // Mostrar al cargar
     mostrarPedido();
   </script>
-
 </body>
 </html>
