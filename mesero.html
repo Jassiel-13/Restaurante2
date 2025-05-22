@@ -12,10 +12,11 @@
 <body>
   <div class="container">
     <h3>Pedido Actual</h3>
-<button class="btn-cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
+    <button class="btn-cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
+
     <div id="pedidoMesero">
       <!-- Aquí se mostrará el pedido dinámicamente -->
-      <p>No hay productos.</p> <!-- Mensaje por defecto si no hay pedido -->
+      <p>No hay productos.</p>
     </div>
 
     <div class="botones">
@@ -24,9 +25,78 @@
     </div>
   </div>
 
-  <script src="src/assets/js/log.js"></script></body>
+  <script>
+    function mostrarPedido() {
+      const pedidoDiv = document.getElementById("pedidoMesero");
+      pedidoDiv.innerHTML = ""; // Limpiar contenido
 
+      const pedidoJSON = localStorage.getItem("pedidoActual");
+      if (!pedidoJSON) {
+        pedidoDiv.innerHTML = "<p>No hay productos.</p>";
+        return;
+      }
+
+      const pedido = JSON.parse(pedidoJSON);
+
+      if (pedido.length === 0) {
+        pedidoDiv.innerHTML = "<p>No hay productos.</p>";
+        return;
+      }
+
+      pedido.forEach((producto, index) => {
+        const productoDiv = document.createElement("div");
+        productoDiv.classList.add("producto");
+
+        const nombreProducto = document.createElement("h4");
+        nombreProducto.textContent = `${index + 1}. ${producto.nombre}`;
+
+        const listaIngredientes = document.createElement("ul");
+        if (producto.ingredientes && producto.ingredientes.length > 0) {
+          producto.ingredientes.forEach(ing => {
+            const li = document.createElement("li");
+            li.textContent = ing;
+            listaIngredientes.appendChild(li);
+          });
+        } else {
+          const li = document.createElement("li");
+          li.textContent = "Sin ingredientes";
+          listaIngredientes.appendChild(li);
+        }
+
+        productoDiv.appendChild(nombreProducto);
+        productoDiv.appendChild(listaIngredientes);
+        pedidoDiv.appendChild(productoDiv);
+      });
+    }
+
+    function vaciarPedido() {
+      if (confirm("¿Estás seguro de que quieres vaciar el pedido?")) {
+        localStorage.removeItem("pedidoActual");
+        mostrarPedido();
+      }
+    }
+
+    function enviarACocina() {
+      const pedidoJSON = localStorage.getItem("pedidoActual");
+      if (!pedidoJSON || JSON.parse(pedidoJSON).length === 0) {
+        alert("No hay nada que enviar.");
+        return;
+      }
+
+      // Aquí puedes agregar lógica para enviar el pedido a un backend si deseas
+      alert("Pedido enviado a cocina correctamente.");
+      localStorage.removeItem("pedidoActual");
+      mostrarPedido();
+    }
+
+    function cerrarSesion() {
+      alert("Sesión cerrada.");
+      window.location.href = "index.html";
+    }
+
+    // Mostrar pedido al cargar la página
+    mostrarPedido();
+  </script>
 
 </body>
-
 </html>
