@@ -4,21 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mesero</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kavoon&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kavoon&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="src/css/mesero.css" />
 </head>
 <body>
   <div class="container">
     <h3>Pedido Actual</h3>
     <button class="btn-cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
-
     <div id="pedidoMesero">
-      <!-- Contenido del pedido se genera dinámicamente -->
       <p>No hay productos.</p>
     </div>
-
     <div class="botones">
       <button class="vaciar" onclick="vaciarPedido()">Vaciar Pedido</button>
       <button class="enviar" onclick="enviarACocina()">Enviar a Cocina</button>
@@ -43,37 +38,26 @@
       }
 
       const tabla = document.createElement("table");
-      const thead = document.createElement("thead");
-      thead.innerHTML = `
-        <tr>
-          <th>#</th>
-          <th>Producto</th>
-          <th>Ingredientes</th>
-        </tr>
+      tabla.innerHTML = `
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Producto</th>
+            <th>Ingredientes</th>
+          </tr>
+        </thead>
       `;
-      tabla.appendChild(thead);
 
       const tbody = document.createElement("tbody");
 
       pedido.forEach((producto, index) => {
         const tr = document.createElement("tr");
 
-        const tdIndex = document.createElement("td");
-        tdIndex.textContent = index + 1;
-
-        const tdNombre = document.createElement("td");
-        tdNombre.textContent = producto.nombre;
-
-        const tdIngredientes = document.createElement("td");
-        if (producto.ingredientes && producto.ingredientes.length > 0) {
-          tdIngredientes.innerHTML = producto.ingredientes.map(i => `• ${i}`).join("<br>");
-        } else {
-          tdIngredientes.textContent = "Sin ingredientes";
-        }
-
-        tr.appendChild(tdIndex);
-        tr.appendChild(tdNombre);
-        tr.appendChild(tdIngredientes);
+        tr.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${producto.nombre}</td>
+          <td>${producto.ingredientes && producto.ingredientes.length > 0 ? producto.ingredientes.map(i => `• ${i}`).join("<br>") : "Sin ingredientes"}</td>
+        `;
 
         tbody.appendChild(tr);
       });
@@ -106,7 +90,7 @@
       window.location.href = "index.html";
     }
 
-    // Mostrar al cargar
+    // Mostrar el pedido cuando se carga la página
     mostrarPedido();
   </script>
 </body>
